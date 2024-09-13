@@ -2,9 +2,9 @@
 $error_message = array();
 
 //初回の訪問ならばローディング画面を作成
-function CreatLoading($isFirstVisit)
+function CreatLoading($is_first_visit)
 {
-  if ($isFirstVisit) {
+  if ($is_first_visit) {
     echo '
       <div id="loader">
         <div class="loader"></div>
@@ -13,50 +13,50 @@ function CreatLoading($isFirstVisit)
 }
 
 //初めての訪問か二回目以降の訪問かを記録する
-$isFirstVisit = false;
+$is_first_visit = false;
 
 //すべてのフィールドに値が入っているかをチェック
-$isComplete = false; //値が入っていない箇所が一つでもあればfalseとなる
+$is_complete = false; //値が入っていない箇所が一つでもあればfalseとなる
 
 //バリデーションチェック
 if (isset($_POST["SendButton"])) {
-  $isComplete = true;
+  $is_complete = true;
   if (empty($_POST["F"])) {
     $_POST["F"] = 1;
   }
 
   if (empty($_POST["E"])) {
     $error_message["E"] = "Eの値を記入してください";
-    $isComplete = false;
+    $is_complete = false;
   }
 
   if (empty($_POST["S"])) {
     $error_message["S"] = "Sの値を記入してください";
-    $isComplete = false;
+    $is_complete = false;
   }
 
   if (empty($_POST["Pretextarea"])) {
     $error_message["Pretextarea"] = "Preの値を記入してください";
-    $isComplete = false;
+    $is_complete = false;
   }
 
   if (empty($_POST["Posttextarea"])) {
     $error_message["Posttextarea"] = "Postの値を記入してください";
-    $isComplete = false;
+    $is_complete = false;
   }
 } else {
   //初回訪問であることを記録する
-  $isFirstVisit = true;
+  $is_first_visit = true;
 }
 
 //戻るボタン（すべてリセットする）
 if (isset($_POST["BackButton"])) {
-  $isComplete = false;
+  $is_complete = false;
   $_POST["SendButton"] = false;
-  $isFirstVisit = false;
+  $is_first_visit = false;
 }
 
-function showValidationErrors()
+function ShowValidationErrors()
 {
   global $error_message;
   if ($error_message) {
@@ -71,17 +71,17 @@ function showValidationErrors()
 
 function PrintFormOrList()
 {
-  global $isComplete;
-  if ($isComplete == true) {
+  global $is_complete;
+  if ($is_complete == true) {
     //リスト表示画面
     echo '<div style="margin-top: 100px; padding: 0; margin-left: 30px;">
               <div style="font-size: 30px; font-family: \'Dela Gothic One\', sans-serif; font-weight: 200;">';
-    for ($totalAdds = 0, $lineBreak = 1; $_POST["F"] + $totalAdds * $_POST["S"] <= $_POST["E"]; $totalAdds++, $lineBreak++) {
-      echo $_POST["Pretextarea"] . $_POST["F"] + $totalAdds * $_POST["S"] . $_POST["Posttextarea"];
+    for ($total_adds = 0, $line_break = 1; $_POST["F"] + $total_adds * $_POST["S"] <= $_POST["E"]; $total_adds++, $line_break++) {
+      echo $_POST["Pretextarea"] . $_POST["F"] + $total_adds * $_POST["S"] . $_POST["Posttextarea"];
       //リストが長い場合に横長になるのを防ぐ
-      if ($lineBreak == 7) {
+      if ($line_break == 7) {
         echo '<br>';
-        $lineBreak = 0;
+        $line_break = 0;
       }
     }
     echo '  </div><br>
@@ -132,90 +132,13 @@ function PrintFormOrList()
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&display=swap" rel="stylesheet">
+  <link href="./css/index.css" rel="stylesheet" type="text/css" media="all">
   <title>リストジェネレータ</title>
-  <style type="text/css">
-    .loader {
-      height: 60px;
-      aspect-ratio: 1;
-      position: relative;
-    }
-
-    .loader::before,
-    .loader::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: 50%;
-      transform-origin: bottom;
-    }
-
-    .loader::after {
-      background:
-        radial-gradient(at 75% 15%, #fffb, #0000 35%),
-        radial-gradient(at 80% 40%, #0000, #0008),
-        radial-gradient(circle 5px, #fff 94%, #0000),
-        radial-gradient(circle 10px, #000 94%, #0000),
-        linear-gradient(#F93318 0 0) top /100% calc(50% - 5px),
-        linear-gradient(#fff 0 0) bottom/100% calc(50% - 5px) #000;
-      background-repeat: no-repeat;
-      animation: l20 1s infinite cubic-bezier(0.5, 120, 0.5, -120);
-    }
-
-    .loader::before {
-      background: #ddd;
-      filter: blur(8px);
-      transform: scaleY(0.4) translate(-13px, 0px);
-    }
-
-    @keyframes l20 {
-
-      30%,
-      70% {
-        transform: rotate(0deg)
-      }
-
-      49.99% {
-        transform: rotate(0.2deg)
-      }
-
-      50% {
-        transform: rotate(-0.2deg)
-      }
-    }
-
-    #loader {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: white;
-      z-index: 9999;
-      transition: opacity 1s;
-      opacity: 1;
-    }
-
-    #loader.fade-out {
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .TextArea {
-      margin-top: 10px;
-      width: 100%;
-      max-width: 500px;
-      height: 90px;
-      resize: none;
-    }
-  </style>
 </head>
 
 <body style="background-color: #93aad4; padding: 0;">
   <?php
-  CreatLoading($isFirstVisit);
+  CreatLoading($is_first_visit);
   ?>
   <header>
     <div style="background-color: #222a41;
@@ -232,7 +155,7 @@ function PrintFormOrList()
   </header>
   <?php
   PrintFormOrList();
-  showValidationErrors();
+  ShowValidationErrors();
   ?>
 </body>
 
